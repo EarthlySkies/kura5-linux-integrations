@@ -1,0 +1,204 @@
+.TH "KURA5" "6" "2021-12-17" "The Kura5 Project" "BSD Games Manual"
+.\" For the purposes of portability
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" Disabling hyphenation
+.nh
+.\" Disabling justification
+.ad l
+.\"
+.\"
+.\"
+.SH "NAME"
+kura5 \- A 3D Boktai fangame that uses live weather
+.SH "SYNOPSIS"
+.HP \w'\fBkura5\fR\ 'u
+\fBkura5\fR [\fIOPTION\fR...][\fIOPTION VALUE\fR...]
+.SH "DESCRIPTION"
+.PP
+\fBKura5: Bonds of the Undying\fR
+is a non-canonical fan game for the Boktai series and it's successor, Lunar Knights. It's neither a full remake nor a sequel, but a remix of both familiar Boktai staples and new elements that seek to recreate the magic that we all loved from the series. Kura5's weather system knows where you are in the real world, so there's no need for a solar sensor. In-game events may even play out differently depending on if you play in darkness or in light...And that's just the start\&!
+.SH "OPTIONS"
+.PP
+Built on the Unity 3D engine, the \fBkura5\fR executable accepts the standard Unity Standalone Player command line arguments. This list only covers the ones relevant to the Linux version of the game. Multiple non-conflicting options may be used simultaneously\&.
+.SS "Rending options:"
+.PP
+\fB\-monitor\fR \fIVALUE\fR
+.RS 4
+Run the Player on the specified monitor. Indexing starts at 1. 
+.RS 0
+Accepted values: any positive integer
+.RE
+.RE
+.PP
+\fB\-force-device-index\fR \fIVALUE\fR
+.RS 4
+Make the Player use a specific GPU device by passing it the index of that GPU. This isn't supported for OpenGL rendering. 
+.RS 0
+Accepted values: any positive integer
+.RE
+.RE
+.PP
+\fB\-disable-gpu-skinning\fR
+.RS 4
+Disables Graphics Processing Unit (GPU) skinning at startup.
+.RE
+.PP
+\fB\-force-glcore\fR
+.RS 4
+Force the game to use the OpenGL core profile for rendering. The Player tries to use the most recent OpenGL version available, and all OpenGL extensions exposed by the OpenGL drivers. Unity uses Direct3D if the platform doesn’t support OpenGL.
+.RE
+.PP
+\fB\-force-glcore\fR\fIVALUE\fR
+.RS 4
+Similar to -force-glcore, but requests a specific OpenGL context version. Do not place a whitespace between the option and the value. 
+.RS 0
+Accepted values: 32, 33, 40, 41, 42, 43, 44, 45
+.RE
+.RE
+.PP
+\fB\-force-clamped\fR
+.RS 4
+Use this together with -force-glcoreVALUE to prevent checks for additional OpenGL extensions.
+.RE
+.PP
+\fB\-force-vulkan\fR
+.RS 4
+Force the game to use Vulkan for rendering. Might improve performance over OpenGL rendering. Requires a Vulkan-compatible GPU.
+.RE
+.PP
+\fB\-force-wayland\fR
+.RS 4
+Activate experimental Wayland support for the Player.
+.RE
+.SS "Graphics options:"
+.PP
+\fB\-popupwindow\fR
+.RS 4
+Create the window as a pop-up window, without a frame.
+.RE
+.PP
+\fB\-screen-fullscreen\fR \fIVALUE\fR
+.RS 4
+Override the default full-screen state.
+.RS 0
+Accepted values: 0, 1
+.RE
+.RE
+.PP
+\fB\-screen-height\fR \fIVALUE\fR
+.RS 4
+Override the default screen height.
+.RS 0
+Accepted values: any positive integer
+.RE
+.RE
+.PP
+\fB\-screen-width\fR \fIVALUE\fR
+.RS 4
+Override the default screen width.
+.RS 0
+Accepted values: any positive integer
+.RE
+.RE
+.PP
+\fB\-screen-quality\fR \fIVALUE\fR
+.RS 4
+Override the default screen quality. Higher values mean better visuals. 
+.RS 0
+Accepted values: 0, 1, 2, 3, 4
+.RE
+.RE
+.SS "Misc options:"
+.PP
+\fB\-nolog\fR
+.RS 4
+Do not produce the "Player.log" game output log file.
+.RE
+.PP
+\fB\-single-instance\fR
+.RS 4
+Run only one instance of the game at a time. If another instance is already running, launching the game again with -single-instance focuses on the existing one.
+.RE
+.SH "FILES"
+.PP
+.SS "System files:"
+.PP
+/usr/bin/kura5
+.RS 4
+A small shell script wrapper for the Kura5 executable. Integrates \fBkura5\fR to $PATH and the DE.
+.RE
+.PP
+/usr/share/applications/kura5.desktop
+.RS 4
+The Kura5 desktop entry file. Allows the game to show up on the desktop.
+.RE
+.PP
+/usr/share/man/man6/kura5.6.gzip
+.RS 4
+This manual page. To help users with the Kura5 package.
+.RE
+.PP
+/usr/share/pixmaps/Kura5BOTU.png
+.RS 4
+The icon for the Kura5 desktop entry.
+.RE
+.SS "Game files:"
+.PP
+/opt/kura5/
+.RS 4
+The main installation directory where all game-related files of Kura5 are located.
+.RE
+.PP
+/opt/kura5/kura5
+.RS 4
+The main executable of Kura5, which launches the game. It must be located inside the same directory as the "Kura5_DATA" directory.
+.RE
+.PP
+/opt/kura5/kura5_Data/
+.RS 4
+All assets of Kura5 (textures, sounds, scripts, etc.) are located in this directory and its subdirectories.
+.RE
+.SS "User files:"
+.PP
+$XDG_CONFIG_HOME/unity3d/Kura5/Kura5BOTU/
+.RS 4
+The directory which stores persistent user-specific configuration and save files.
+.RE
+.PP
+$XDG_CONFIG_HOME/unity3d/Kura5/Kura5BOTU/Unity/
+.RS 4
+Directory for internal Unity configuration and log files.
+.RE
+.PP
+$XDG_CONFIG_HOME/unity3d/Kura5/Kura5BOTU/Player.log
+.RS 4
+Output log file of the game. Contains general and debug information. Generated anew on each new game session. 
+.RE
+.PP
+$XDG_CONFIG_HOME/unity3d/Kura5/Kura5BOTU/prefs
+.RS 4
+Persistent configuration file for the game settings. Sets the default values in the game launcher. Changes when values are modified in the game launcher.
+.RE
+.PP
+$XDG_CONFIG_HOME/unity3d/Kura5/Kura5BOTU/save*.bok
+.RS 4
+Persistent user-specific save files. The number on the save indicates the slot it will be loaded in.
+.RE
+.SH "AUTHORS"
+.PP
+"Kura5: Bonds of the Undying" by \fBChickenHat\fR (a.k.a. \fBDuque\fR) and the Kura5 team
+.RS 0
+See the full credits of the Kura5 project at \fIhttps://kura5.tumblr.com/credits\fR
+.RE
+.PP
+Original Boktai-series by the \fBKonami Holdings Corporation\fR, produced by \fBHideo Kojima\fR, directed by \fBIkuya Nakamura\fR and made by all of the \fBOriginal Boktai Staff\fR
+.PP
+Manual pages and Linux packaging by \fBEarthlySkies\fB
+.SH "SEE ALSO"
+.PP
+\fBKura5 homepage\fR \- \fIhttps://chickenhat.itch.io/kura5-bonds-of-the-undying\fR
+.PP
+\fBKura5 Discord server\fR \- \fIhttps://discord.gg/Y5uWngK\fR
+.PP
+\fBProject Devlog\fR \- \fIhttps://kura5.tumblr.com\fR
