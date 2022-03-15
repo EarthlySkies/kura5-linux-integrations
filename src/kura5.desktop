@@ -14,9 +14,9 @@ PrefersNonDefaultGPU=true
 SingleMainWindow=true
 
 [Desktop Action new-opengl-window]
-Name=New Window rendered with OpenGL
+Name=New Window under OpenGL
 Exec=/usr/bin/kura5 -force-opengl
 
 [Desktop Action new-vulkan-window]
-Name=New Window rendered with Vulkan
+Name=New Window under Vulkan
 Exec=/usr/bin/kura5 -force-vulkan
