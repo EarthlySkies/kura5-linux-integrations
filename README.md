@@ -4,6 +4,9 @@ This repository aims to contain files that users should find useful in creating 
 It does not contain prebuilt binaries or the game itself, merely the fluff that should come along in a proper package installed 
 from the repositories of your preferred distro.
 
+Please note that this repository uses the [Arch Packaging Standards](https://wiki.archlinux.org/index.php?title=Arch_packaging_standards) as a baseline.
+As such, file paths, directory structures and the like might not be directly portable "as-is" to other distributions and might require some rewriting.
+
 ### Contained files
 - **A manual page**: describes the game and lists available command line flags
 - **A desktop entry**: allows Kura5 to show up in your applications list
