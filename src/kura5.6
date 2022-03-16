@@ -1,4 +1,4 @@
-.TH "KURA5" "6" "2021-12-17" "The Kura5 Project" "BSD Games Manual"
+.TH "KURA5" "6" "2022-3-16" "The Kura5 Project" "BSD Games Manual"
 .\" For the purposes of portability
 .ie \n(.g .ds Aq \(aq
 .el       .ds Aq '
@@ -23,14 +23,6 @@ is a non-canonical fan game for the Boktai series and it's successor, Lunar Knig
 Built on the Unity 3D engine, the \fBkura5\fR executable accepts the standard Unity Standalone Player command line arguments. This list only covers the ones relevant to the Linux version of the game. Multiple non-conflicting options may be used simultaneously\&.
 .SS "Rending options:"
 .PP
-\fB\-monitor\fR \fIVALUE\fR
-.RS 4
-Run the Player on the specified monitor. Indexing starts at 1. 
-.RS 0
-Accepted values: any positive integer
-.RE
-.RE
-.PP
 \fB\-force-device-index\fR \fIVALUE\fR
 .RS 4
 Make the Player use a specific GPU device by passing it the index of that GPU. This isn't supported for OpenGL rendering. 
@@ -44,9 +36,24 @@ Accepted values: any positive integer
 Disables Graphics Processing Unit (GPU) skinning at startup.
 .RE
 .PP
+\fB\-popupwindow\fR
+.RS 4
+Create the window as a pop-up window, without a frame.
+.RE
+.PP
+\fB\-force-wayland\fR
+.RS 4
+Activate experimental Wayland support. Note: \fIvery\fR experimental.
+.RE
+.PP
+\fB\-force-vulkan\fR
+.RS 4
+Use Vulkan for rendering instead of OpenGL. Enables in-game clouds for improved visuals. Might also improve performance. Requires a Vulkan-compatible GPU and drivers.
+.RE
+.PP
 \fB\-force-glcore\fR
 .RS 4
-Force the game to use the OpenGL core profile for rendering. The Player tries to use the most recent OpenGL version available, and all OpenGL extensions exposed by the OpenGL drivers. Unity uses Direct3D if the platform doesn’t support OpenGL.
+Use OpenGL for rendering. This tries to use the most recent OpenGL version available, and all OpenGL extensions exposed by the OpenGL drivers. Falls back to Direct3D if OpenGL is not available.
 .RE
 .PP
 \fB\-force-glcore\fR\fIVALUE\fR
@@ -61,21 +68,16 @@ Accepted values: 32, 33, 40, 41, 42, 43, 44, 45
 .RS 4
 Used together with -force-glcoreVALUE to prevent checks for additional OpenGL extensions.
 .RE
-.PP
-\fB\-force-vulkan\fR
-.RS 4
-Force the game to use Vulkan for rendering. Might improve performance over OpenGL rendering. Requires a Vulkan-compatible GPU and drivers.
-.RE
-.PP
-\fB\-force-wayland\fR
-.RS 4
-Activate experimental Wayland support for the Player.
-.RE
 .SS "Graphics options:"
 .PP
-\fB\-popupwindow\fR
+Please note that the values in this section only set the defaults in the launcher. Every value here can be modified via the GUI.
+.PP
+\fB\-monitor\fR \fIVALUE\fR
 .RS 4
-Create the window as a pop-up window, without a frame.
+Run the Player on the specified monitor. Indexing starts at 1. 
+.RS 0
+Accepted values: any positive integer
+.RE
 .RE
 .PP
 \fB\-screen-fullscreen\fR \fIVALUE\fR
@@ -124,6 +126,16 @@ Run only one instance of the game at a time. If another instance is already runn
 .PP
 .SS "System files:"
 .PP
+/etc/apparmor.d/opt.kura5.kura5
+.RS 4
+AppArmor profile for the main kura5 executable. Used by AppArmor to confine the game within a sandbox.
+.RE
+.PP
+/etc/apparmor.d/tunables/kura5
+.RS 4
+List of variables used in the main AppArmor profile. Modify this if you installed kura5 somewhere else than the default location.
+.RE
+.PP
 /usr/bin/kura5
 .RS 4
 A small shell script wrapper for the Kura5 executable. Integrates \fBkura5\fR to $PATH and the DE.
@@ -147,17 +159,17 @@ The icon for the Kura5 desktop entry.
 .PP
 /opt/kura5/
 .RS 4
-The main installation directory where all game-related files of Kura5 are located.
+The main installation directory where all game-related files of Kura5 are stored. Located in /opt due to the self-contained nature of Kura5.
 .RE
 .PP
 /opt/kura5/kura5
 .RS 4
-The main executable of Kura5, which launches the game. It must be located inside the same directory as the "Kura5_DATA" directory.
+The main executable of Kura5, which launches the game. Must be located inside the same directory as the "kura5_Data" directory.
 .RE
 .PP
 /opt/kura5/kura5_Data/
 .RS 4
-All assets of Kura5 (textures, sounds, scripts, etc.) are located in this directory and its subdirectories.
+All assets of Kura5 (textures, sounds, scripts, etc.) are located in this directory and its subdirectories. Must be located inside the same directory as the main "kura5" executable.
 .RE
 .SS "User files:"
 .PP
@@ -173,7 +185,7 @@ Directory for internal Unity configuration and log files.
 .PP
 $XDG_CONFIG_HOME/unity3d/Kura5/Kura5BOTU/Player.log
 .RS 4
-Output log file of the game. Contains general and debug information. Generated anew on each new game session. 
+Output log file produced by the game. Contains general and debug information. Separate from messages printed to stdout. Generated anew on each game restart.
 .RE
 .PP
 $XDG_CONFIG_HOME/unity3d/Kura5/Kura5BOTU/prefs
@@ -183,7 +195,7 @@ Persistent configuration file for the game settings. Sets the default values in 
 .PP
 $XDG_CONFIG_HOME/unity3d/Kura5/Kura5BOTU/save*.bok
 .RS 4
-Persistent user-specific save files. The number on the save indicates the slot it will be loaded in.
+Persistent save files. The number on the save indicates the slot it will be loaded in.
 .RE
 .SH "AUTHORS"
 .PP
