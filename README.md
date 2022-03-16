@@ -12,3 +12,4 @@ from the repositories of your preferred distro.
 
 #### Under construction
 - **An AppArmor profile**: for sandboxing support
+- **PKGBUILD**: automatic package creation for all Arch-based distros
