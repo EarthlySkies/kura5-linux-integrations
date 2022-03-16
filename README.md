@@ -8,7 +8,7 @@ from the repositories of your preferred distro.
 - **A manual page**: describes the game and lists available command line flags
 - **A desktop entry**: allows Kura5 to show up in your applications list
 - **An icon for the desktop entry**: makes the desktop entry easy to identify
-- **A shell script wrapper**: redirects to the proper executable. Usually placed into /usr/bin/ to integrate Kura5 into $PATH 
+- **A shell script wrapper**: integrates Kura5 into $PATH 
 
 #### Under construction
 - **An AppArmor profile**: for sandboxing support
