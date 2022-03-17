@@ -33,7 +33,7 @@ Accepted values: any positive integer
 .PP
 \fB\-disable-gpu-skinning\fR
 .RS 4
-Disables Graphics Processing Unit (GPU) skinning at startup.
+Disable Graphics Processing Unit (GPU) skinning at startup.
 .RE
 .PP
 \fB\-popupwindow\fR
@@ -53,12 +53,12 @@ Use Vulkan for rendering instead of OpenGL. Enables in-game clouds for improved 
 .PP
 \fB\-force-glcore\fR
 .RS 4
-Use OpenGL for rendering. This tries to use the most recent OpenGL version available, and all OpenGL extensions exposed by the OpenGL drivers. Falls back to Direct3D if OpenGL is not available.
+Use OpenGL for rendering (the default). The game tries to use the most recent OpenGL version available, and all OpenGL extensions exposed by the OpenGL drivers. Falls back to Direct3D if OpenGL is not available.
 .RE
 .PP
 \fB\-force-glcore\fR\fIVALUE\fR
 .RS 4
-Similar to -force-glcore, but requests a specific OpenGL context version. Do not place a whitespace between the option and the value. 
+Similar to -force-glcore, but uses a specific OpenGL context version. Do not place a whitespace between the option and the value.
 .RS 0
 Accepted values: 32, 33, 40, 41, 42, 43, 44, 45
 .RE
@@ -70,35 +70,11 @@ Used together with -force-glcoreVALUE to prevent checks for additional OpenGL ex
 .RE
 .SS "Graphics options:"
 .PP
-Please note that the values in this section only set the defaults in the launcher. Every value here can be modified via the GUI.
+The following options represent various values that are usually set via the game's GUI launcher. If the launcher cannot be accessed, these options can be used instead. Please also note that these options take priority over the ones set within the launcher, if the values are in conflict.
 .PP
 \fB\-monitor\fR \fIVALUE\fR
 .RS 4
-Run the Player on the specified monitor. Indexing starts at 1. 
-.RS 0
-Accepted values: any positive integer
-.RE
-.RE
-.PP
-\fB\-screen-fullscreen\fR \fIVALUE\fR
-.RS 4
-Override the default full-screen state.
-.RS 0
-Accepted values: 0, 1
-.RE
-.RE
-.PP
-\fB\-screen-height\fR \fIVALUE\fR
-.RS 4
-Override the default screen height.
-.RS 0
-Accepted values: any positive integer
-.RE
-.RE
-.PP
-\fB\-screen-width\fR \fIVALUE\fR
-.RS 4
-Override the default screen width.
+Run the game on the specified monitor. Indexing starts at 1. Corresponds to the "Display" value on the graphical launcher.
 .RS 0
 Accepted values: any positive integer
 .RE
@@ -106,9 +82,33 @@ Accepted values: any positive integer
 .PP
 \fB\-screen-quality\fR \fIVALUE\fR
 .RS 4
-Override the default screen quality. Higher values mean better visuals. 
+Override the default graphics quality setting. Higher values mean better visuals. Corresponds to the "Graphics Quality" value on the graphical launcher.
 .RS 0
 Accepted values: 0, 1, 2, 3, 4
+.RE
+.RE
+.PP
+\fB\-screen-fullscreen\fR \fIVALUE\fR
+.RS 4
+Override the default full-screen state. Corresponds to the "Windowed" value on the graphical launcher.
+.RS 0
+Accepted values: 0, 1
+.RE
+.RE
+.PP
+\fB\-screen-height\fR \fIVALUE\fR
+.RS 4
+Override the default screen height. Corresponds to the "Screen resolution" value on the graphical launcher.
+.RS 0
+Accepted values: any positive integer
+.RE
+.RE
+.PP
+\fB\-screen-width\fR \fIVALUE\fR
+.RS 4
+Override the default screen width. Corresponds to the "Screen resolution" value on the graphical launcher.
+.RS 0
+Accepted values: any positive integer
 .RE
 .RE
 .SS "Misc options:"
