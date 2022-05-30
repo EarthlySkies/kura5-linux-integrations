@@ -1,17 +1,14 @@
-# Kura5 Linux Packaging
+# Kura5 Linux Integrations
 
-This repository aims to contain files that users should find useful in creating packaging for [Kura5](https://chickenhat.itch.io/kura5-bonds-of-the-undying).
-It does not contain prebuilt binaries or the game itself, merely the fluff that should come along in a proper package installed 
-from the repositories of your preferred distro.
-
-Please note that this repository uses the [Arch Packaging Standards](https://wiki.archlinux.org/index.php?title=Arch_packaging_standards) as a baseline.
-As such, file paths, directory structures and the like might not be directly portable "as-is" to other distributions and might require some rewriting.
+A repository for easy access to the extra Linux files that will be provided in the next release of [Kura5](https://chickenhat.itch.io/kura5-bonds-of-the-undying) on 2022-7-29.
+Feel free to download and utilize everything here, but please note that the scripts might not work with the current public release due to the difference in save file locations.
 
 ### Contained files
 - **A manual page**: describes the game and lists available command line flags
 - **A desktop entry**: allows Kura5 to show up in your applications list
 - **An icon for the desktop entry**: makes the desktop entry easy to identify
-- **A shell script wrapper**: integrates Kura5 into $PATH 
+- **An install script**: allows the user to integrate Kura5 into their desktop environment
+- **A shell script launcher**: provides extended logging and tries to determine the best renderer
 
 #### Under construction
 - **An AppArmor profile**: for sandboxing support
