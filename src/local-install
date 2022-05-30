@@ -1,0 +1,96 @@
+#!/bin/bash
+# Author: EarthlySkies <earthlyskies@protonmail.ch>
+# Part of the Kura5 project's Linux integration suite
+# Subscript for the main 'install' script
+# Used to install Kura5 to ~/.local/share/Kura5
+# This should not be run independently
+
+# Default install paths
+if [ "$HOME" == "" ]; then
+    LOCALDATA="/home/$(whoami)/.local"
+    LOCALINSTALL="/home/$(whoami)/.local/share/Kura5"
+else
+    LOCALDATA="$HOME/.local"
+    LOCALINSTALL="$HOME/.local/share/Kura5"
+fi
+
+# Text formatting
+BOLD=$(tput bold)
+NORM=$(tput sgr0)
+
+# Exits the program if called
+print-local-installation-success-banner () {
+    echo "$BOLD:: Local installation complete ::$NORM"
+    echo "Kura5 has been successfully installed for the current user"
+    echo "It should appear shortly in the list of installed applications"
+    echo "Alternatively, add '~/.local/bin/' to Your \$PATH and launch it immediately"
+    exit 0
+}
+
+set-local-installed-file-permissions () {
+    echo "$BOLD:: Setting permissions for the installed files...$NORM"
+    find "$LOCALINSTALL"/Kura5_Data -type d -execdir chmod -v 0555 "{}" \;
+    find "$LOCALINSTALL"/Kura5_Data -type f -execdir chmod -v 0444 "{}" \;
+    chmod -v 0555 "$LOCALINSTALL"/Kura5_Data
+    chmod -v 0555 "$LOCALINSTALL"/kura5-launcher
+    chmod -v 0555 "$LOCALINSTALL"/uninstall
+    chmod -v 0444 "$LOCALINSTALL"/tinycaw.png
+    chmod -v 0444 "$LOCALINSTALL"/README_EN.txt
+    chmod -v 0444 "$LOCALINSTALL"/README_JPN.txt
+    chmod -v 0555 "$LOCALINSTALL"/Kura5.x86_64
+    chmod -v 0444 "$LOCALDATA"/share/applications/local.userapp-kura5.desktop
+    chmod -v 0444 "$LOCALDATA"/share/icons/Kura5BOTU.png
+    echo " Permission setting complete"
+}
+
+copy-files-to-local-paths () {
+    echo "$BOLD:: Copying files to installation targets...$NORM"
+    cp -v -r -f ./Kura5_Data/* "$LOCALINSTALL"/Kura5_Data/
+    ln -v -s "$LOCALINSTALL"/kura5-launcher "$LOCALDATA"/bin/kura5
+    install -v -D -m0555 ./kura5-launcher "$LOCALINSTALL"/kura5-launcher
+    install -v -D -m0555 ./Kura5.x86_64 "$LOCALINSTALL"/Kura5.x86_64
+    install -v -D -m0444 ./README_EN.txt "$LOCALINSTALL"/README_EN.txt
+    install -v -D -m0444 ./README_JPN.txt "$LOCALINSTALL"/README_JPN.txt
+    install -v -D -m0444 ./tinycaw.png "$LOCALINSTALL"/tinycaw.png
+    install -v -D -m0555 ./Integrations/local-uninstall "$LOCALINSTALL"/uninstall
+    install -v -D -m0444 ./Integrations/kura5-desktop-icon "$LOCALDATA"/share/icons/Kura5BOTU.png
+    install -v -D -m0444 ./Integrations/desktop.tmp "$LOCALDATA"/share/applications/local.userapp-kura5.desktop
+    rm -v -f ./Integrations/desktop.tmp
+    echo " File copying complete"
+}
+
+create-required-local-directories () {
+    echo "$BOLD:: Creating target directories...$NORM"
+    [ ! -d "$LOCALDATA"/bin ]                    && mkdir -p -v -m0755 "$LOCALDATA"/bin
+    [ ! -d "$LOCALDATA"/share/applications ]     && mkdir -p -v -m0755 "$LOCALDATA"/share/applications
+    [ ! -d "$LOCALDATA"/share/icons ]            && mkdir -p -v -m0755 "$LOCALDATA"/share/icons
+    [ ! -d "$LOCALDATA"/share/Kura5/Kura5_Data ] && mkdir -p -v -m0755 "$LOCALDATA"/share/Kura5/Kura5_Data
+    echo " Local directories ready"
+}
+
+purge-local-game-install-path () {
+    if [ -d "$LOCALINSTALL" ]; then
+        echo "$BOLD:: Clearing the target installation path...$NORM"
+        rm -v -r -f "$LOCALINSTALL"
+        echo " Installation target path clear"
+    fi
+}
+
+generate-local-desktop-file () {
+    echo "$BOLD:: Generating a desktop entry for the current user..."
+    [ -f ./Integrations/desktop.tmp ] && rm -v -f ./Integrations/desktop.tmp
+    cp -v ./Integrations/kura5-desktop-entry ./Integrations/desktop.tmp
+    sed --sandbox -i "s!/opt/kura5!$LOCALINSTALL!g" ./Integrations/desktop.tmp
+    echo " Desktop file generation complete"
+}
+    
+start-local-kura5-install () {
+    echo "$BOLD Installing Kura5 for the current user...$NORM"
+    generate-local-desktop-file
+    purge-local-game-install-path
+    create-required-local-directories
+    copy-files-to-local-paths
+    set-local-installed-file-permissions
+    print-local-installation-success-banner
+}
+

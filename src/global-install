@@ -1,0 +1,90 @@
+#!/bin/bash
+# Author: EarthlySkies <earthlyskies@protonmail.ch>
+# Part of the Kura5 project's Linux integration suite
+# Subscript for the main 'install' script
+# Used to install Kura5 to "$GLOBALINSTALL"
+# Requires root privileges
+# This should not be run independently
+
+# Default install path
+GLOBALINSTALL="/opt/kura5"
+
+# Text formatting
+BOLD=$(tput bold)
+NORM=$(tput sgr0)
+
+print-global-install-success-banner () {
+    echo ""
+    echo "$BOLD:: Installation complete ::$NORM"
+    echo "Assuming no errors, Kura5 should appear on Your list of applications shortly."
+    echo "Alternatively, You can start it immediately by typing 'kura5' into Your terminal."
+    echo "If that doesn't work, make sure that '/usr/local/bin' is a part of Your \$PATH"
+    exit 0
+}
+
+set-global-installed-file-permissions () {
+    echo "$BOLD:: Setting permissions for the installed files...$NORM"
+    find "$GLOBALINSTALL"/Kura5_Data -type d -execdir chmod -v 0755 "{}" \;
+    find "$GLOBALINSTALL"/Kura5_Data -type f -execdir chmod -v 0644 "{}" \;
+    chmod -v 0755 "$GLOBALINSTALL"
+    chmod -v 0755 "$GLOBALINSTALL"/uninstall
+    chmod -v 0644 "$GLOBALINSTALL"/tinycaw.png
+    chmod -v 0644 "$GLOBALINSTALL"/README_EN.txt
+    chmod -v 0644 "$GLOBALINSTALL"/README_JPN.txt
+    chmod -v 0755 "$GLOBALINSTALL"/kura5-launcher
+    chmod -v 0755 "$GLOBALINSTALL"/Kura5.x86_64
+    chmod -v 0755 "$GLOBALINSTALL"/Kura5_Data
+    chmod -v 0644 /etc/apparmor.d/opt.kura5.kura5
+    chmod -v 0644 /etc/apparmor.d/tunables/kura5
+    chmod -v 0644 /usr/share/applications/kura5.desktop
+    chmod -v 0644 /usr/share/man/man6/kura5.6.gz
+    chmod -v 0644 /usr/share/pixmaps/Kura5BOTU.png
+    echo " Permission setting complete"
+}
+
+copy-files-to-global-paths () {
+    echo "$BOLD:: Copying files to installation targets...$NORM"
+    cp -v -r -f ./Kura5_Data/* "$GLOBALINSTALL"/Kura5_Data/
+    ln -v -s "$GLOBALINSTALL"/kura5-launcher /usr/local/bin/kura5
+    install -v -D -o root -g root -m0644 ./tinycaw.png "$GLOBALINSTALL"/tinycaw.png
+    install -v -D -o root -g root -m0755 ./Kura5.x86_64 "$GLOBALINSTALL"/Kura5.x86_64
+    install -v -D -o root -g root -m0644 ./README_EN.txt "$GLOBALINSTALL"/README_EN.txt
+    install -v -D -o root -g root -m0644 ./README_JPN.txt "$GLOBALINSTALL"/README_JPN.txt
+    install -v -D -o root -g root -m0755 ./kura5-launcher "$GLOBALINSTALL"/kura5-launcher
+    install -v -D -o root -g root -m0755 ./Integrations/global-uninstall "$GLOBALINSTALL"/uninstall
+    install -v -D -o root -g root -m0644 ./Integrations/kura5-manual-page /usr/share/man/man6/kura5.6.gz
+    install -v -D -o root -g root -m0644 ./Integrations/kura5-desktop-icon /usr/share/pixmaps/Kura5BOTU.png
+    install -v -D -o root -g root -m0644 ./Integrations/kura5-apparmor-additions /etc/apparmor.d/tunables/kura5
+    install -v -D -o root -g root -m0644 ./Integrations/kura5-desktop-entry /usr/share/applications/kura5.desktop
+    install -v -D -o root -g root -m0644 ./Integrations/kura5-apparmor-profile /etc/apparmor.d/opt.kura5.kura5
+    echo " File copying complete"
+}
+
+create-required-global-directories () {
+    echo "$BOLD:: Creating target directories...$NORM"
+    [ ! -d "$GLOBALINSTALL"/Kura5_Data ] && mkdir -p -v -m0755 "$GLOBALINSTALL"/Kura5_Data
+    [ ! -d /etc/apparmor.d/tunables ]    && mkdir -p -v -m0755 /etc/apparmor.d/tunables
+    [ ! -d /usr/local/bin ]              && mkdir -p -v -m0755 /usr/local/bin
+    [ ! -d /usr/share/applications ]     && mkdir -p -v -m0755 /usr/share/applications
+    [ ! -d /usr/share/man/man6 ]         && mkdir -p -v -m0755 /usr/share/man/man6
+    [ ! -d /usr/share/pixmaps ]          && mkdir -p -v -m0755 /usr/share/pixmaps
+    echo " Target directories ready"
+}
+
+purge-global-game-install-path () {
+    if [ -d "$GLOBALINSTALL" ]; then
+        echo "$BOLD:: Clearing the target installation path...$NORM"
+        rm -v -r -f --preserve-root "$GLOBALINSTALL"
+        echo " Installation target path clear"
+    fi
+}
+
+start-global-kura5-install () {
+    echo "$BOLD Installing Kura5 globally...$NORM"
+    purge-global-game-install-path
+    create-required-global-directories
+    copy-files-to-global-paths
+    set-global-installed-file-permissions
+    print-global-install-success-banner
+}
+

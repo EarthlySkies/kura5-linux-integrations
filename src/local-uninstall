@@ -1,0 +1,61 @@
+#!/bin/bash
+# Author: EarthlySkies <earthlyskies@protonmail.ch>
+# Part of the Kura5 project's Linux integration suite
+# Used to uninstall Kura5 from ~/.local/share/Kura5
+
+# Text formatting
+BOLD=$(tput bold)
+NORM=$(tput sgr0)
+
+print-local-uninstall-completion-banner () {
+    echo ""
+    echo "$BOLD:: Local uninstallation complete ::$NORM"
+    echo "Kura5 has been deleted from ~/.local/share/Kura5/"
+    echo "It should shortly disappear from the list of installed applications"
+    echo "If You had any issues, please let us know in the project's Discord server"
+    exit 0
+}
+
+kura5-local-uninstall () {
+    echo "$BOLD Uninstalling Kura5...$NORM"
+    echo "$BOLD:: Removing desktop integration...$NORM"
+    rm -v -f ~/.local/bin/kura5
+    rm -v -f ~/.local/share/icons/Kura5BOTU.png
+    rm -v -f ~/.local/share/applications/local.userapp-kura5.desktop
+    rmdir -v -p --ignore-fail-on-non-empty ~/.local/share/applications
+    rmdir -v -p --ignore-fail-on-non-empty ~/.local/share/icons
+    rmdir -v -p --ignore-fail-on-non-empty ~/.local/bin
+    echo " Desktop integration files cleared"
+    echo "$BOLD:: Removing the game files...$NORM"
+    find ~/.local/share/Kura5/Kura5_Data -type d -execdir chmod -v 755 "{}" \;
+    chmod -v 755 ~/.local/share/Kura5/Kura5_Data
+    rm -v -r -f --preserve-root ~/.local/share/Kura5
+    echo " Game files cleared"
+}
+
+confirm-local-uninstall () {
+    echo "$BOLD:: Uninstallation requested ::$NORM"
+    echo "Confirming deletion of all installed files from ~/.local/share/Kura5"
+    echo "Uninstall Kura5 from the current user? (y/N): "
+    read UNINSTALL
+    if [ "$UNINSTALL" == "y" ]; then
+        echo "Confirmation received"
+        kura5-local-uninstall
+    else
+        echo "Did not receive confirmation"
+        echo "Aborting uninstallation"
+        exit 0
+    fi
+}
+
+# 'main' starts here
+if [ $(id -u) == "0" ]; then
+    echo "The local uninstaller cannot be run as root"
+    echo ""
+    echo "If You are looking to uninstall Kura5 system-wide,"
+    echo "see the 'global-uninstall' script instead"
+    exit 1
+else
+    confirm-local-uninstall
+    print-local-uninstall-completion-banner
+fi
