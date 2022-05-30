@@ -12,4 +12,3 @@ Feel free to download and utilize everything here, but please note that the scri
 
 #### Under construction
 - **An AppArmor profile**: for sandboxing support
-- **PKGBUILD**: automatic package creation for all Arch-based distros
