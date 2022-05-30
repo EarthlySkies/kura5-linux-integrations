@@ -6,9 +6,9 @@ Feel free to download and utilize everything here, but please note that the scri
 All scripts depend on the tools provided by the GNU Coreutils and should work on any distro based on them.
 
 ### Contained files
-- **A manual page**: describes the game and lists available command line flags
 - **A desktop entry**: allows Kura5 to show up in your applications list
 - **An icon for the desktop entry**: makes the desktop entry easy to identify
+- **A manual page**: describes the game and lists available command line flags
 - **An install script**: allows the user to integrate Kura5 into their desktop environment
 - **A shell script launcher**: provides extended logging and tries to determine the best renderer
 
