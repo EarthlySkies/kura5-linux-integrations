@@ -1,4 +1,4 @@
-.TH "KURA5" "6" "2022-3-16" "The Kura5 Project" "BSD Games Manual"
+.TH "KURA5" "6" "2022-5-27" "The Kura5 Project" "BSD Games Manual"
 .\" For the purposes of portability
 .ie \n(.g .ds Aq \(aq
 .el       .ds Aq '
@@ -122,23 +122,28 @@ Do not produce the "Player.log" game output log file.
 .RS 4
 Run only one instance of the game at a time. If another instance is already running, launching the game again with -single-instance focuses on the existing one.
 .RE
+.PP
+\fB\-nolauncher\fR
+.RS 4
+Do not enable extended logging, do not redirect stdout to the logs and do not run any checks.
+.RE
+.PP
+\fB\-uninstall\fR
+.RS 4
+Uninstalls Kura5 from the system (if running as root) or from the current user (if running unprivileged). Only has an effect if Kura5 has been installed via the provided installer.
+.RE
 .SH "FILES"
 .PP
 .SS "System files:"
 .PP
-/etc/apparmor.d/opt.kura5.kura5
+/etc/apparmor.d/Kura5.x86_64
 .RS 4
-AppArmor profile for the main kura5 executable. Used by AppArmor to confine the game within a sandbox.
+AppArmor profile for the main Kura5 executable. Used by AppArmor to confine the game within a sandbox, if installed.
 .RE
 .PP
 /etc/apparmor.d/tunables/kura5
 .RS 4
-List of variables used in the main AppArmor profile. Modify this if you installed kura5 somewhere else than the default location.
-.RE
-.PP
-/usr/bin/kura5
-.RS 4
-A small shell script wrapper for the Kura5 executable. Integrates \fBkura5\fR to $PATH and the DE.
+List of variables used in the main AppArmor profile. Modify this if you installed Kura5 somewhere else than the default location.
 .RE
 .PP
 /usr/share/applications/kura5.desktop
@@ -146,9 +151,9 @@ A small shell script wrapper for the Kura5 executable. Integrates \fBkura5\fR to
 The Kura5 desktop entry file. Allows the game to show up on the desktop.
 .RE
 .PP
-/usr/share/man/man6/kura5.6.gzip
+/usr/share/man/man6/kura5.6.gz
 .RS 4
-This manual page. To help users with the Kura5 package.
+This manual page. To help users with Kura5's system integration.
 .RE
 .PP
 /usr/share/pixmaps/Kura5BOTU.png
@@ -162,14 +167,24 @@ The icon for the Kura5 desktop entry.
 The main installation directory where all game-related files of Kura5 are stored. Located in /opt due to the self-contained nature of Kura5.
 .RE
 .PP
-/opt/kura5/kura5
+/opt/kura5/kura5-launcher
 .RS 4
-The main executable of Kura5, which launches the game. Must be located inside the same directory as the "kura5_Data" directory.
+A small shell script launcher for the Kura5 executable. Provides extended logging and tries to determine the best renderer if \fB'vulkan-tools'\fR is installed.
 .RE
 .PP
-/opt/kura5/kura5_Data/
+/opt/kura5/uninstall
 .RS 4
-All assets of Kura5 (textures, sounds, scripts, etc.) are located in this directory and its subdirectories. Must be located inside the same directory as the main "kura5" executable.
+Uninstall script provided with by the installer. Can be used to install the game. Can be called through the launcher with the '-uninstall' flag
+.RE
+.PP
+/opt/kura5/Kura5.x86_64
+.RS 4
+The main executable of Kura5. Must be located inside the same directory as the "Kura5_Data" directory.
+.RE
+.PP
+/opt/kura5/Kura5_Data/
+.RS 4
+All assets of Kura5 (textures, sounds, scripts, etc.) are located in this directory and its subdirectories. Must be located inside the same directory as the main "Kura5.x86_64" executable.
 .RE
 .SS "User files:"
 .PP
@@ -193,7 +208,7 @@ $XDG_CONFIG_HOME/unity3d/Kura5/Kura5BOTU/prefs
 Persistent configuration file for the game settings. Sets the default values in the game launcher. Changes when values are modified in the game launcher.
 .RE
 .PP
-$XDG_CONFIG_HOME/unity3d/Kura5/Kura5BOTU/save*.bok
+$XDG_CONFIG_HOME/unity3d/Kura5/Kura5BOTU/save.bok
 .RS 4
 Persistent save files. The number on the save indicates the slot it will be loaded in.
 .RE
@@ -206,7 +221,7 @@ See the full credits of the Kura5 project at \fIhttps://kura5.tumblr.com/credits
 .PP
 Original Boktai-series by the \fBKonami Holdings Corporation\fR, produced by \fBHideo Kojima\fR, directed by \fBIkuya Nakamura\fR and made by all of the \fBOriginal Boktai Staff\fR
 .PP
-Manual pages and Linux packaging by \fBEarthlySkies\fB
+Manual pages and Linux integration by \fBEarthlySkies\fB
 .SH "SEE ALSO"
 .PP
 \fBKura5 homepage\fR \- \fIhttps://chickenhat.itch.io/kura5-bonds-of-the-undying\fR
