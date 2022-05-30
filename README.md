@@ -1,7 +1,7 @@
 # Kura5 Linux Integrations
 
 A repository for easy access to the extra Linux files that will be provided in the next release of [Kura5](https://chickenhat.itch.io/kura5-bonds-of-the-undying) on 2022-7-29.
-Feel free to download and utilize everything here, but please note that the scripts might not work with the current public release due to the difference in save file locations.
+Feel free to download and utilize everything here, but please note that the scripts might not work with the current public release due to the difference in save file locations. Contributions, improvements and bug reports are welcome.
 
 ### Contained files
 - **A manual page**: describes the game and lists available command line flags
