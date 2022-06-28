@@ -43,20 +43,11 @@ Extracted Kura5 tarball
 
 
 ## Dependencies
-Most, if not all, required tools should be provided by the GNU Coreutils package of 
-your distribution (or its dependencies).
-If not, here is the list of the tools that the scripts use:
+These are the tools the scripts utilize and depend upon.
+All of them should be installed on every Linux system based on the GNU Coreutils,
+either as a part of them or as a dependency. Please note that the package names might be
+different on your distribution of choise.
 - bash
-- chmod
-- cp
-- echo
-- find
-- install
-- ln
-- ls
-- mkdir
-- mv
-- rm
-- rmdir
+- coreutils
+- ncurses
 - sed
-- tput
