@@ -1,0 +1,8 @@
+#vim: syntax=apparmor
+# Location abstractions for opt.kura5.kura5
+# Change these locations if you have installed Kura5 elsewhere
+
+@{kura5_installation_dir} = /opt/kura5/
+@{kura5_executable} = @{kura5_installation_dir}/Kura5.x86_64
+@{kura5_data_dir} = @{kura5_installation_dir}/Kura5_Data/
+@{kura5_user_dir} = @{HOME}/.config/unity3d/Kura5/Kura5BOTU/
