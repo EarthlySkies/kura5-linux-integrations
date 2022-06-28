@@ -13,7 +13,7 @@ All scripts depend on the tools provided by the GNU Coreutils and should work on
 - **A shell script launcher**: provides extended logging and tries to determine the best renderer
 
 #### Under construction
-- **An AppArmor profile**: for sandboxing support
+- **An AppArmor profile**: for sandboxing support (mostly works, but breaks controller support and certain window decorations)
 
 ## Expected directory structure
 
