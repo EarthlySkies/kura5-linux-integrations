@@ -4,7 +4,6 @@ A repository for easy access to the extra Linux files that will be provided in t
 
 Feel free to download and utilize everything here, but please note that the scripts might not work with the current public release due to the difference in save file locations. Contributions, improvements and bug reports are welcome.
 
-All scripts depend on the tools provided by the GNU Coreutils and should work on any distro based on them.
 
 ## Contained files
 - **A desktop entry**: allows Kura5 to show up in your applications list
@@ -41,3 +40,22 @@ Extracted Kura5 tarball
 └---Kura5_Data
     |   ...
 ```
+
+
+## Dependencies
+Most, if not all, required tools should be provided by the GNU Coreutils package of your distribution.
+If not, here is the list of the tools that the scripts use:
+- bash
+- chmod
+- cp
+- echo
+- find
+- install
+- ln
+- ls
+- mkdir
+- mv
+- rm
+- rmdir
+- sed
+- tput
