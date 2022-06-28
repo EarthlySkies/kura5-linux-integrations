@@ -1,21 +1,30 @@
 #!/bin/bash
-
-# Defaults
-LOCALINSTALLDIR="~/.local/share/Kura5"
-GLOBALINSTALLDIR="/opt/kura5"
-EARTHPUBKEY="2C5840812EFB51EDF65B2075149ADFC82AD8E3A0"
+# Author: EarthlySkies <earthlyskies@protonmail.ch>
+# Generic Linux install script for Kura5
+# A part of the Kura5 project's Linux integration suite
 
 # Text formatting
 BOLD=$(tput bold)
 NORM=$(tput sgr0)
 
+# Default installation locations
+GLOBALINSTALL="/opt/kura5"
+LOCALDATA="$HOME/.local"
+LOCALINSTALL="$LOCALDATA/share/Kura5"
+
 print-installer-intro-banner ()  {
     echo "Kura5 universal Linux installer by EarthlySkies"
 }
 
-#  Subfunction of "check-presense-of-file"
-# Takes one filename as a parameter
-# Exits after completion
+check-home-is-set () {
+    if [ "$HOME" == "" ]; then
+        echo "\$HOME appears to be unset"
+        echo "The installation cannot continue without it"
+        echo "Set the \$HOME variable and try the install again"
+        exit 1
+    fi
+}
+
 did-not-find-required-file () {
     echo "Did not find the required file: '$1'"
     echo "Cannot continue the installation without it"
@@ -24,8 +33,6 @@ did-not-find-required-file () {
     exit 2
 }
 
-# Subfunction of "check-presense-of-all-files"
-# Takes one filename as a parameter
 check-presense-of-file () {
     if [ -f ./"$1" ]; then
         return
@@ -53,8 +60,6 @@ check-presense-of-all-files () {
     echo " All necessary files were found"
 }
 
-# Takes one pathname as a parameter
-# Subfunction for "test-write-to-dir"
 cannot-write-to-rootfs () {
     echo "$BOLD Could not write to path$NORM '$1'$BOLD even with root privileges$NORM"
     echo "This is likely caused by an immutable root filesystem"
@@ -62,8 +67,6 @@ cannot-write-to-rootfs () {
     exit 5
 }
 
-# Takes one directory name as a parameter
-# Subfunction for "run-rootfs-write-tests"
 test-write-to-dir () {
     if [ ! -d "$1" ]; then
         mkdir -p "$1" \
@@ -71,34 +74,29 @@ test-write-to-dir () {
           || cannot-write-to-rootfs "$1"
     else
         touch "$1" \
-          && rmdir -p --ignore-fail-on-non-empty "$1" \
           || cannot-write-to-rootfs "$1"
     fi
 }
 
-# Mostly for the Steam Deck with the possibly "immutable OS filesystem"
 run-rootfs-write-tests () {
     if [ $(id -u) == "0" ]; then
         echo "$BOLD:: Trying to cover for a possibly immutable root filesystem...$NORM"
-        test-write-to-dir "/opt/kura5/Kura5_Data"
+        test-write-to-dir "$GLOBALINSTALL/Kura5_Data"
         test-write-to-dir "/etc/apparmor.d/tunables"
-        test-write-to-dir "/usr/share/applications"
         test-write-to-dir "/usr/local/bin"
+        test-write-to-dir "/usr/share/applications"
         test-write-to-dir "/usr/share/man/man6"
         test-write-to-dir "/usr/share/pixmaps"
         echo " Necessary write-access to the root filesystem should be available"
     fi
 }
 
-# Subfunction of "check-install-path-availability"
-# Takes one pathname as a parameter
 install-path-taken () {
     echo "Files were found in the target installation directory: $1"
-    echo "This path will be WIPED during the installation process"
+    echo "This path will be$BOLD WIPED$NORM during the installation process"
     echo "If You decide to continue, make sure there are no important files there"
 }
 
-# Subfunction of "check-install-path-availability"
 install-path-is-available () {
     echo " Install path is free and ready to use"
 }
@@ -106,27 +104,27 @@ install-path-is-available () {
 check-install-path-availability () {
     echo "$BOLD:: Checking install path availability...$NORM"
     if [ $(id -u) == "0" ]; then
-        [ ! -d /opt/kura5 ] \
+        [ ! -d "$GLOBALINSTALL" ] \
           && install-path-is-available \
-          || install-path-taken "/opt/kura5"
+          || install-path-taken "$GLOBALINSTALL"
     else
-        [ ! -d ~/.local/share/Kura5 ] \
+        [ ! -d "$LOCALINSTALL" ] \
           && install-path-is-available \
-          || install-path-taken "~/.local/share/Kura5"
+          || install-path-taken "$LOCALINSTALL"
     fi
 }
 
 ask-for-install-confirmation () {
     echo "$BOLD:: Ready to install$NORM"
     if [ $(id -u) == "0" ]; then
-        echo "Installing to /opt/kura5/"
+        echo "Installing to $GLOBALINSTALL"
         [ -f ./Integrations/global-install ] && . ./Integrations/global-install
     else
-        echo "Installing to ~/.local/share/Kura5/"
+        echo "Installing to $LOCALINSTALL"
         [ -f ./Integrations/local-install ] && . ./Integrations/local-install
     fi
-    echo "This directory will be WIPED during the install"
-    echo "Start the installation? (y/N):"
+    echo "This directory will be$BOLD WIPED$NORM during the install"
+    echo -n "Start the installation? (y/N): "
     read STARTINSTALL
     if [ "$STARTINSTALL" == "y" ]; then
         [[ $(id -u) == "0" ]] \
@@ -142,9 +140,8 @@ ask-for-install-confirmation () {
 
 main () {
     print-installer-intro-banner
-    #run-gnupg-checks # TODO: actually make this work
+    check-home-is-set
     check-presense-of-all-files
-    #verify-integrity-of-install-files # TODO: read file checksums from a file
     check-install-path-availability
     run-rootfs-write-tests
     ask-for-install-confirmation
