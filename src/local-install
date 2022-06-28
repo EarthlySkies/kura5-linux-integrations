@@ -1,22 +1,4 @@
 #!/bin/bash
-# Author: EarthlySkies <earthlyskies@protonmail.ch>
-# Part of the Kura5 project's Linux integration suite
-# Subscript for the main 'install' script
-# Used to install Kura5 to ~/.local/share/Kura5
-# This should not be run independently
-
-# Default install paths
-if [ "$HOME" == "" ]; then
-    LOCALDATA="/home/$(whoami)/.local"
-    LOCALINSTALL="/home/$(whoami)/.local/share/Kura5"
-else
-    LOCALDATA="$HOME/.local"
-    LOCALINSTALL="$HOME/.local/share/Kura5"
-fi
-
-# Text formatting
-BOLD=$(tput bold)
-NORM=$(tput sgr0)
 
 # Exits the program if called
 print-local-installation-success-banner () {
@@ -77,7 +59,7 @@ purge-local-game-install-path () {
 }
 
 generate-local-desktop-file () {
-    echo "$BOLD:: Generating a desktop entry for the current user..."
+    echo "$BOLD:: Generating a desktop entry for the current user...$NORM"
     [ -f ./Integrations/desktop.tmp ] && rm -v -f ./Integrations/desktop.tmp
     cp -v ./Integrations/kura5-desktop-entry ./Integrations/desktop.tmp
     sed --sandbox -i "s!/opt/kura5!$LOCALINSTALL!g" ./Integrations/desktop.tmp
@@ -93,4 +75,3 @@ start-local-kura5-install () {
     set-local-installed-file-permissions
     print-local-installation-success-banner
 }
-
