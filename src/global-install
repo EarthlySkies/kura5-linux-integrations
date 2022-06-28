@@ -1,17 +1,4 @@
 #!/bin/bash
-# Author: EarthlySkies <earthlyskies@protonmail.ch>
-# Part of the Kura5 project's Linux integration suite
-# Subscript for the main 'install' script
-# Used to install Kura5 to "$GLOBALINSTALL"
-# Requires root privileges
-# This should not be run independently
-
-# Default install path
-GLOBALINSTALL="/opt/kura5"
-
-# Text formatting
-BOLD=$(tput bold)
-NORM=$(tput sgr0)
 
 print-global-install-success-banner () {
     echo ""
@@ -87,4 +74,3 @@ start-global-kura5-install () {
     set-global-installed-file-permissions
     print-global-install-success-banner
 }
-
