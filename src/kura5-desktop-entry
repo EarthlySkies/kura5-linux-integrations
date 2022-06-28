@@ -1,10 +1,11 @@
 [Desktop Entry]
 Type=Application
+Encoding=UTF-8
 Version=1.5
 Name=Kura5: Bonds of the Undying
 GenericName=Boktai Fangame
 X-GNOME-FullName=Kura5: Bonds of the Undying
-Comment=A 3D stealth-action-adventure game
+Comment=A 3D stealth-action adventure game
 Icon=Kura5BOTU
 DBusActivatable=false
 TryExec=/opt/kura5/Kura5.x86_64
@@ -17,10 +18,12 @@ Keywords=unity;rgp;
 X-AppInstall-Keywords=game
 StartupWMClass=kura5
 X-GNOME-Gettext-Domain=kura5
+X-GNOME-UsesNotifications=false
 X-Ubuntu-Gettext-Domain=kura5
 PrefersNonDefaultGPU=true
 X-KDE-RunOnDiscreteGpu=true
 SingleMainWindow=true
+X-GNOME-SingleWindow=true
 
 [Desktop Action start-with-opengl]
 Name=Start with OpenGL rendering
@@ -29,3 +32,4 @@ Exec=/opt/kura5/kura5-launcher -force-opengl
 [Desktop Action start-with-vulkan]
 Name=Start with Vulkan rendering
 Exec=/opt/kura5/kura5-launcher -force-vulkan
+
