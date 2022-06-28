@@ -43,7 +43,8 @@ Extracted Kura5 tarball
 
 
 ## Dependencies
-Most, if not all, required tools should be provided by the GNU Coreutils package of your distribution.
+Most, if not all, required tools should be provided by the GNU Coreutils package of 
+your distribution (or its dependencies).
 If not, here is the list of the tools that the scripts use:
 - bash
 - chmod
