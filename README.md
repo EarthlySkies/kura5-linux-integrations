@@ -5,7 +5,7 @@ Feel free to download and utilize everything here, but please note that the scri
 
 All scripts depend on the tools provided by the GNU Coreutils and should work on any distro based on them.
 
-### Contained files
+## Contained files
 - **A desktop entry**: allows Kura5 to show up in your applications list
 - **An icon for the desktop entry**: makes the desktop entry easy to identify
 - **A manual page**: describes the game and lists available command line flags
@@ -14,3 +14,29 @@ All scripts depend on the tools provided by the GNU Coreutils and should work on
 
 #### Under construction
 - **An AppArmor profile**: for sandboxing support
+
+## Expected directory structure
+
+```
+Extracted Kura5 tarball
+|   install
+|   kura5-launcher
+|   Kura5.x86_64
+|   README_EN.txt
+|   README_JPN.txt
+|   tinycaw.png
+|
+└---Integrations
+|   |   global-install
+|   |   global-uninstall
+|   |   kura5-apparmor-additions
+|   |   kura5-apparmor-profile
+|   |   kura5-desktop-entry
+|   |   kura5-desktop-icon
+|   |   kura5-manual-page
+|   |   local-install
+|   |   local-uninstall
+|
+└---Kura5_Data
+    |   ...
+```
