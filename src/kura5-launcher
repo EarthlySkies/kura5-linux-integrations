@@ -4,7 +4,7 @@
 # Tries to determine if Vulkan can be used
 # Provides extended logging
 
-VERSION="1.0.3"
+VERSION="1.2.1"
 USERDIR=~/.config/unity3d/Kura5/Kura5BOTU
 GAMELOG="$USERDIR/Player.log"
 LAUNCHLOG="$USERDIR/Launcher.log"
@@ -14,6 +14,18 @@ STDOUTLOG="$USERDIR/Stdout.log"
 BOLD=$(tput bold)
 NORM=$(tput sgr0)
 
+# Doing this globally since Bash can't do return values
+if [ -L "${BASH_SOURCE[0]}" ]; then
+    LAUNCHERPATH=$(readlink "${BASH_SOURCE[0]}")
+    LAUNCHERPATH=$(realpath "$LAUNCHERPATH")
+else
+    LAUNCHERPATH=$(realpath "${BASH_SOURCE[0]}")
+fi
+LAUNCHERDIR="$(dirname $LAUNCHERPATH)"
+
+
+
+# Easy logging access
 write-to-log () { echo "kura5-launcher[$$] at $(date +%R:%S.%N) -$1-: $2" >> "$LAUNCHLOG"; }
 loginfo () { write-to-log "INFO" "$1"; }
 logwarn () { write-to-log "WARN" "$1"; }
@@ -22,20 +34,14 @@ logemptyline () { echo "" >> "$LAUNCHLOG"; }
 # Takes the total script input as a parameter
 catch-uninstall-flag () {
     if [[ "$1" == *"-uninstall"* ]]; then
-        if [ -L "${BASH_SOURCE[0]}" ]; then
-            LAUNCHERPATH=$(readlink "${BASH_SOURCE[0]}")
-            LAUNCHERPATH=$(realpath "$LAUNCHERPATH")
-        else
-            LAUNCHERPATH=$(realpath "${BASH_SOURCE[0]}")
-        fi
-        LAUNCHERDIR="$(dirname $LAUNCHERPATH)"
         "$LAUNCHERDIR"/uninstall
         exit "$?"
     fi
 }
 
-# https://bugzilla.gnome.org//show_bug.cgi?id=772875#c5
+
 catch-root-user () {
+    # https://bugzilla.gnome.org//show_bug.cgi?id=772875#c5
     if [ $(id -u) == "0" ]; then
         echo "Avoid running the game as root"
         echo "kura5: cannot launch a graphical application as root: operation not permitted"
@@ -52,10 +58,13 @@ catch-launcher-bypass () {
 }
 
 first-things-first () {
+    # This needs to be created before AppArmor confinment
     if [ ! -d "$USERDIR" ]; then
         mkdir -p "$USERDIR"
         loginfo "Created directory $USERDIR"
     fi
+    
+    # Hanging old logs might mess up this session
     rm -f "$GAMELOG"
     rm -f "$LAUNCHLOG"
     rm -f "$STDOUTLOG"
@@ -71,43 +80,40 @@ print-launcher-banner () {
 check-if-running-installed () {
     loginfo "Trying to determine if the game has been installed..."
     loginfo "Running directory detected as '$1'"
+    
     if [[ "$1" == "/opt/kura5" ]] || [[ "$1" == *"/.local/share/Kura5"* ]]; then
         loginfo "Game located within a standard installation directory"
         loginfo "Most likely currently running an installed instance"
     else
         loginfo "Game not located within any standard installation path"
         loginfo "Most likely currently running in portable mode"
-        chmod +x ./Kura5.x86_64
     fi
 }
 
 find-path-and-main-executable () {
-    if [ -L "${BASH_SOURCE[0]}" ]; then
-        LAUNCHERPATH=$(readlink "${BASH_SOURCE[0]}")
-        LAUNCHERPATH=$(realpath "$LAUNCHERPATH")
-    else
-        LAUNCHERPATH=$(realpath "${BASH_SOURCE[0]}")
-    fi
-    LAUNCHERDIR="$(dirname $LAUNCHERPATH)"
     if [ ! -f "$LAUNCHERDIR"/Kura5.x86_64 ]; then
         echo ""
         echo "Could not find the Kura5.x86_64 executable. Cannot procceed without it"
         echo "Make sure that the launcher is located in the same directory as the game itself"
         exit 3
     fi
+    
     check-if-running-installed "$LAUNCHERDIR"
 }
 
 # Takes the total script input as a parameter
 log-cmdline-flags () {
     loginfo "Checking if cmdline flags have been used..."
+    
     if [ "$#" != "0" ]; then
         logwarn "Manual cmdline flags have been detected"
         logwarn "The launcher was invoked with the following options: '$*'"
+        
         if [[ "$@" == *"-force-wayland"* ]]; then
             logwarn "Wayland mode activated via cmdflags despite lack of proper support!"
             loginfo "This will most likely prevent the game from working at all"
         fi
+        
     else
         loginfo "No flags were passed to the launcher"
     fi
@@ -115,6 +121,7 @@ log-cmdline-flags () {
 
 check-user-preload-libraries () {
     loginfo "Checking for user-set preload libraries..."
+    
     if [ "$LD_PRELOAD" != "" ]; then
         logwarn "User-specific custom libraries have been preloaded"
         loginfo "They allow overriding of Kura5's/Unity's own libraries and functionalities"
@@ -126,34 +133,41 @@ check-user-preload-libraries () {
 }
 
 log-global-library-preload-warning () {
-    logwarn "The system has global preload libraries in use by default"
+    loginfo "The system has global preload libraries in use by default"
     loginfo "However, unless custom libraries have been enabled globally, issues are unlikely"
     loginfo "Most global libraries are auto-enabled by packages and are unobtrusive by design"
 }
 
 check-global-preload-libraries () {
 loginfo "Checking if the system preloads libraries globally..."
-    if [ -f /etc/ld.so.preload ] || [ -L /etc/ld.so.preload ]; then
+    if [ -f /etc/ld.so.preload ]; then
         PRELOADFILE=$(cat /etc/ld.so.preload)
     fi
+    
     if [ "$PRELOADFILE" != "" ]; then
         log-global-library-preload-warning
     else
-        if [ -d /etc/ld.so.conf.d ] || [ -L /etc/ld.so.conf.d ]; then
+    
+        if [ -d /etc/ld.so.conf.d ]; then
             PRELOADCONTENTS=$(ls -A /etc/ld.so.conf.d)
+            
             if [ "$PRELOADCONTENTS" != "" ]; then
                 log-global-library-preload-warning
             fi
+            
         else
             loginfo "Did not find any global libraries set to preload"
-        fi        
+        fi
+               
     fi
 }
 
 scrub-username-from-logs () {
+    if [ "$USER" == "" ]; then
+        USER=$(whoami)
+    fi
     loginfo "Scrubbing username from the logs..."
-    USERNAME=$(whoami)
-    sed --sandbox -i "s/$USERNAME/username/g" "$LAUNCHLOG"
+    sed --sandbox -i "s/$USER/[username]/g" "$LAUNCHLOG"
     loginfo "Scrub complete"
 }
 
@@ -161,13 +175,6 @@ calculate-checksums () {
     loginfo "Calculating the launcher's SHA512 checksum..."
     loginfo "$(sha512sum ${BASH_SOURCE[0]})"
     loginfo "Calculating the SHA512 checksum of Kura5.x86_64..."
-    if [ -L "${BASH_SOURCE[0]}" ]; then
-        LAUNCHERPATH=$(readlink "${BASH_SOURCE[0]}")
-        LAUNCHERPATH=$(realpath "$LAUNCHERPATH")
-    else
-        LAUNCHERPATH=$(realpath "${BASH_SOURCE[0]}")
-    fi
-    LAUNCHERDIR="$(dirname $LAUNCHERPATH)"
     loginfo "$(sha512sum $LAUNCHERDIR/Kura5.x86_64)"
 }
 
@@ -179,12 +186,14 @@ log-cleanup () {
     logemptyline
     [ -f "$GAMELOG" ] && cat "$GAMELOG" >> "$LAUNCHLOG"
     logemptyline
+    
     if [ "$1" == "0" ]; then
         loginfo "Game exited cleanly"
     else
         logwarn "Game did not exit cleanly"
         logwarn "Game exit status code: '$1'"
     fi
+    
     loginfo "Log merge complete"
     calculate-checksums
     scrub-username-from-logs
@@ -196,13 +205,6 @@ log-cleanup () {
 
 # Takes the total script input as a parameter
 start-the-game () {
-    if [ -L "${BASH_SOURCE[0]}" ]; then
-        LAUNCHERPATH=$(readlink "${BASH_SOURCE[0]}")
-        LAUNCHERPATH=$(realpath "$LAUNCHERPATH")
-    else
-        LAUNCHERPATH=$(realpath "${BASH_SOURCE[0]}")
-    fi
-    LAUNCHERDIR="$(dirname $LAUNCHERPATH)"
     if [[ "$@" == *"-nolog"* ]]; then
         rm "$LAUNCHLOG" 
         "$LAUNCHERDIR"/Kura5.x86_64 -single-instance -nolog "$@"
@@ -220,12 +222,14 @@ check-for-forced-renderer () {
     if [[ "$@" == *"-force-opengl"* ]] || [[ "$@" == *"-force-vulkan"* ]]; then
         loginfo "Specific renderer requested via cmdline flags"
         loginfo "Skipping automatic renderer selection"
+        
         if [[ "$@" == *"-force-vulkan"* ]] && [[ "$@" == *"unusable"* ]]; then
             logwarn "Vulkan rendering requested despite lack of support!"
             loginfo "This will most likely cause the game to crash as soon as it starts"
             loginfo "Enabling Vulkan rendering at user's request"
             start-the-game "$@" "-force-vulkan"
         fi
+        
         if [[ "$@" == *"-force-vulkan"* ]]; then
             loginfo "Enabling Vulkan rendering at user's request"
             start-the-game "$@" "-force-vulkan"
@@ -239,10 +243,12 @@ check-for-forced-renderer () {
 # Takes the total script input as a parameter
 check-vulkan-usability () {
     loginfo "Running tests if Vulkan can be used..."
+    
     vulkaninfo \
       >> /dev/null 2>&1 \
       && VULKANUSABILITY="available" \
       || VULKANUSABILITY="unusable"
+      
     if [ "$VULKANUSABILITY" == "available" ]; then
         loginfo "Vulkan tests succeeded. GPU and drivers support Vulkan rendering"
         check-for-forced-renderer "$@" "$VULKANUSABILITY"
@@ -259,7 +265,8 @@ check-vulkan-usability () {
 # Takes the total script input as a parameter
 start-pregame-checks () {
     loginfo "Checking the availability of Vulkan compatibility detection tools..."
-    if [ -f /usr/bin/vulkaninfo ] || [ -L /usr/bin/vulkaninfo ]; then
+    
+    if [ -f /usr/bin/vulkaninfo ]; then
         loginfo "Found 'vulkaninfo' in /usr/bin"
         check-vulkan-usability "$@"
     else
@@ -268,7 +275,6 @@ start-pregame-checks () {
         loginfo "Skipping Vulkan usability tests due a lack of tools"
         loginfo "Installing the 'vulkan-tools' package might fix this issue"
         check-for-forced-renderer "$@"
-        loginfo "Defaulting to OpenGL rendering"
         start-the-game "$@"
     fi
 }
@@ -276,8 +282,8 @@ start-pregame-checks () {
 main () {
     catch-uninstall-flag "$@"
     catch-root-user
-    catch-launcher-bypass
     first-things-first
+    catch-launcher-bypass
     print-launcher-banner
     find-path-and-main-executable
     log-cmdline-flags "$@"
