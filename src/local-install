@@ -53,7 +53,9 @@ create-required-local-directories () {
 purge-local-game-install-path () {
     if [ -d "$LOCALINSTALL" ]; then
         echo "$BOLD:: Clearing the target installation path...$NORM"
-        rm -v -r -f "$LOCALINSTALL"
+        find "$LOCALINSTALL" -type d -execdir chmod -v 0755 "{}" \;
+        find "$LOCALINSTALL" -type f -execdir chmod -v 0644 "{}" \;
+        rm -v -r -f --preserve-root "$LOCALINSTALL"
         echo " Installation target path clear"
     fi
 }
@@ -62,7 +64,7 @@ generate-local-desktop-file () {
     echo "$BOLD:: Generating a desktop entry for the current user...$NORM"
     [ -f ./Integrations/desktop.tmp ] && rm -v -f ./Integrations/desktop.tmp
     cp -v ./Integrations/kura5-desktop-entry ./Integrations/desktop.tmp
-    sed --sandbox -i "s!/opt/kura5!$LOCALINSTALL!g" ./Integrations/desktop.tmp
+    sed --sandbox --in-place "s!/opt/kura5!$LOCALINSTALL!g" ./Integrations/desktop.tmp
     echo " Desktop file generation complete"
 }
     
@@ -75,3 +77,4 @@ start-local-kura5-install () {
     set-local-installed-file-permissions
     print-local-installation-success-banner
 }
+

@@ -14,7 +14,7 @@ set-global-installed-file-permissions () {
     find "$GLOBALINSTALL"/Kura5_Data -type d -execdir chmod -v 0755 "{}" \;
     find "$GLOBALINSTALL"/Kura5_Data -type f -execdir chmod -v 0644 "{}" \;
     chmod -v 0755 "$GLOBALINSTALL"
-    chmod -v 0755 "$GLOBALINSTALL"/uninstall
+    chmod -v 0744 "$GLOBALINSTALL"/uninstall
     chmod -v 0644 "$GLOBALINSTALL"/tinycaw.png
     chmod -v 0644 "$GLOBALINSTALL"/README_EN.txt
     chmod -v 0644 "$GLOBALINSTALL"/README_JPN.txt
@@ -38,7 +38,7 @@ copy-files-to-global-paths () {
     install -v -D -o root -g root -m0644 ./README_EN.txt "$GLOBALINSTALL"/README_EN.txt
     install -v -D -o root -g root -m0644 ./README_JPN.txt "$GLOBALINSTALL"/README_JPN.txt
     install -v -D -o root -g root -m0755 ./kura5-launcher "$GLOBALINSTALL"/kura5-launcher
-    install -v -D -o root -g root -m0755 ./Integrations/global-uninstall "$GLOBALINSTALL"/uninstall
+    install -v -D -o root -g root -m0744 ./Integrations/global-uninstall "$GLOBALINSTALL"/uninstall
     install -v -D -o root -g root -m0644 ./Integrations/kura5-manual-page /usr/share/man/man6/kura5.6.gz
     install -v -D -o root -g root -m0644 ./Integrations/kura5-desktop-icon /usr/share/pixmaps/Kura5BOTU.png
     install -v -D -o root -g root -m0644 ./Integrations/kura5-apparmor-additions /etc/apparmor.d/tunables/kura5
@@ -74,3 +74,4 @@ start-global-kura5-install () {
     set-global-installed-file-permissions
     print-global-install-success-banner
 }
+

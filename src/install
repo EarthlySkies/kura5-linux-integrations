@@ -42,6 +42,7 @@ check-presense-of-file () {
 }
 
 check-presense-of-all-files () {
+    # We don't check for AppArmor profiles since they aren't necessary
     echo "$BOLD:: Verifying that all files for the install are present...$NORM"
     check-presense-of-file "Kura5.x86_64"
     check-presense-of-file "README_EN.txt"
@@ -55,8 +56,6 @@ check-presense-of-all-files () {
     check-presense-of-file "kura5-manual-page"
     check-presense-of-file "kura5-desktop-icon"
     check-presense-of-file "kura5-desktop-entry"
-    check-presense-of-file "kura5-apparmor-profile"
-    check-presense-of-file "kura5-apparmor-additions"
     echo " All necessary files were found"
 }
 
@@ -117,9 +116,12 @@ check-install-path-availability () {
 ask-for-install-confirmation () {
     echo "$BOLD:: Ready to install$NORM"
     if [ $(id -u) == "0" ]; then
+        echo "Detected current user as root. Installing Kura5 for all users"
         echo "Installing to $GLOBALINSTALL"
         [ -f ./Integrations/global-install ] && . ./Integrations/global-install
     else
+        echo "Detected current user as '$USER' (unprivileged)"
+        echo "Installing Kura5 only for the current user"
         echo "Installing to $LOCALINSTALL"
         [ -f ./Integrations/local-install ] && . ./Integrations/local-install
     fi

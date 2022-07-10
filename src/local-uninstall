@@ -1,16 +1,27 @@
 #!/bin/bash
 # Author: EarthlySkies <earthlyskies@protonmail.ch>
 # Part of the Kura5 project's Linux integration suite
-# Used to uninstall Kura5 from ~/.local/share/Kura5
+# Used to uninstall Kura5 from the current user
 
 # Text formatting
 BOLD=$(tput bold)
 NORM=$(tput sgr0)
 
+# We need this and Bash can't do return values
+if [ -L "${BASH_SOURCE[0]}" ]; then
+    LAUNCHERPATH=$(readlink "${BASH_SOURCE[0]}")
+    LAUNCHERPATH=$(realpath "$LAUNCHERPATH")
+else
+    LAUNCHERPATH=$(realpath "${BASH_SOURCE[0]}")
+fi
+LAUNCHERDIR="$(dirname $LAUNCHERPATH)"
+
+    
+
 print-local-uninstall-completion-banner () {
     echo ""
     echo "$BOLD:: Local uninstallation complete ::$NORM"
-    echo "Kura5 has been deleted from ~/.local/share/Kura5/"
+    echo "Kura5 has been deleted from $LAUNCHERDIR"
     echo "It should shortly disappear from the list of installed applications"
     echo "If You had any issues, please let us know in the project's Discord server"
     exit 0
@@ -27,16 +38,16 @@ kura5-local-uninstall () {
     rmdir -v -p --ignore-fail-on-non-empty ~/.local/bin
     echo " Desktop integration files cleared"
     echo "$BOLD:: Removing the game files...$NORM"
-    find ~/.local/share/Kura5/Kura5_Data -type d -execdir chmod -v 755 "{}" \;
-    chmod -v 755 ~/.local/share/Kura5/Kura5_Data
-    rm -v -r -f --preserve-root ~/.local/share/Kura5
+    find "$LAUNCHERDIR" -type d -execdir chmod -v 755 "{}" \;
+    find "$LAUNCHERDIR" -type f -execdir chmod -v 644 "{}" \;
+    rm -v -r -f --preserve-root "$LAUNCHERDIR"
     echo " Game files cleared"
 }
 
 confirm-local-uninstall () {
     echo "$BOLD:: Uninstallation requested ::$NORM"
-    echo "Confirming deletion of all installed files from ~/.local/share/Kura5"
-    echo "Uninstall Kura5 from the current user? (y/N): "
+    echo "Confirming deletion of all installed files from $LAUNCHERDIR"
+    echo -n "Uninstall Kura5 from the current user? (y/N): "
     read UNINSTALL
     if [ "$UNINSTALL" == "y" ]; then
         echo "Confirmation received"
@@ -50,10 +61,9 @@ confirm-local-uninstall () {
 
 # 'main' starts here
 if [ $(id -u) == "0" ]; then
-    echo "The local uninstaller cannot be run as root"
-    echo ""
-    echo "If You are looking to uninstall Kura5 system-wide,"
-    echo "see the 'global-uninstall' script instead"
+    echo "This installation of Kura5 has been done for the current user only"
+    echo "The uninstaller should be run by the same user who ran the installer"
+    echo "It should not be run by root"
     exit 1
 else
     confirm-local-uninstall

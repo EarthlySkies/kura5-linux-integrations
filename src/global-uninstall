@@ -8,10 +8,21 @@
 BOLD=$(tput bold)
 NORM=$(tput sgr0)
 
+# We need this and Bash can't do return values
+if [ -L "${BASH_SOURCE[0]}" ]; then
+    LAUNCHERPATH=$(readlink "${BASH_SOURCE[0]}")
+    LAUNCHERPATH=$(realpath "$LAUNCHERPATH")
+else
+    LAUNCHERPATH=$(realpath "${BASH_SOURCE[0]}")
+fi
+LAUNCHERDIR="$(dirname $LAUNCHERPATH)"
+
+
+
 print-global-uninstall-completion-banner () {
     echo ""
     echo "$BOLD:: Uninstallation complete ::$NORM"
-    echo "Kura5 has been deleted from /opt/kura5"
+    echo "Kura5 has been deleted from $LAUNCHERDIR"
     echo "It should shortly disappear from the list of installed application"
     echo "Desktop entries, manual pages and the like have also been deleted"
     echo "If You had any issues, please let us know in the project's Discord server"
@@ -32,7 +43,7 @@ start-global-kura5-uninstall () {
     rmdir -v -p --ignore-fail-on-non-empty /usr/share/man/man6
     rmdir -v -p --ignore-fail-on-non-empty /usr/share/pixmaps
     echo "$BOLD:: Removing the game files...$NORM"
-    rm -v -r -f --preserve-root /opt/kura5
+    rm -v -r -f --preserve-root "$LAUNCHERDIR"
     echo " Game files cleared"
     echo " System integration files cleared"
 }
@@ -40,7 +51,7 @@ start-global-kura5-uninstall () {
 confirm-global-uninstall () {
     echo "$BOLD:: Uninstallation requested ::$NORM"
     echo "Confirming deletion of all installed files in /opt/kura5"
-    echo "Uninstall Kura5 from the system? (y/N): "
+    echo -n "Uninstall Kura5 from the system? (y/N): "
     read UNINSTALL
     if [ "$UNINSTALL" == "y" ]; then
         echo "Confirmation received"
@@ -54,9 +65,9 @@ confirm-global-uninstall () {
 
 # 'main' starts here
 if [ $(id -u) != "0" ]; then
-    echo "The global uninstaller can only be run with root privileges"
-    echo "If You are looking to unistall Kura5 from Your user,"
-    echo "refer to the 'local-uninstall' script"
+    echo "Kura5 seems to be installed system-wide"
+    echo "As such, only root may run the uninstaller"
+    echo "Invoke 'kura5 -unistall' with 'sudo' to run this uninstaller"
     exit 1
 else
     confirm-global-uninstall
