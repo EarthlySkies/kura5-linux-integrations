@@ -15,7 +15,7 @@ set-local-installed-file-permissions () {
     find "$LOCALINSTALL"/Kura5_Data -type f -execdir chmod -v 0444 "{}" \;
     chmod -v 0555 "$LOCALINSTALL"/Kura5_Data
     chmod -v 0555 "$LOCALINSTALL"/kura5-launcher
-    chmod -v 0555 "$LOCALINSTALL"/uninstall
+    chmod -v 0544 "$LOCALINSTALL"/uninstall
     chmod -v 0444 "$LOCALINSTALL"/tinycaw.png
     chmod -v 0444 "$LOCALINSTALL"/README_EN.txt
     chmod -v 0444 "$LOCALINSTALL"/README_JPN.txt
@@ -34,7 +34,7 @@ copy-files-to-local-paths () {
     install -v -D -m0444 ./README_EN.txt "$LOCALINSTALL"/README_EN.txt
     install -v -D -m0444 ./README_JPN.txt "$LOCALINSTALL"/README_JPN.txt
     install -v -D -m0444 ./tinycaw.png "$LOCALINSTALL"/tinycaw.png
-    install -v -D -m0555 ./Integrations/local-uninstall "$LOCALINSTALL"/uninstall
+    install -v -D -m0544 ./Integrations/local-uninstall "$LOCALINSTALL"/uninstall
     install -v -D -m0444 ./Integrations/kura5-desktop-icon "$LOCALDATA"/share/icons/Kura5BOTU.png
     install -v -D -m0444 ./Integrations/desktop.tmp "$LOCALDATA"/share/applications/local.userapp-kura5.desktop
     rm -v -f ./Integrations/desktop.tmp
