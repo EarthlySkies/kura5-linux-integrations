@@ -47,7 +47,12 @@ These are the tools the scripts utilize and depend upon.
 All of them should be installed on every Linux system based on the GNU Coreutils,
 either as a part of them or as a dependency. Please note that the package names might be
 different on your distribution of choise.
+
+## Hard dependencies
 - bash
 - coreutils
 - ncurses
 - sed
+
+## Optional dependencies
+- vulkan-tools: for trying to determine if Vulkan can be used for rendering
