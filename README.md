@@ -13,7 +13,7 @@ Feel free to download and utilize everything here, but please note that the scri
 - **A shell script launcher**: provides extended logging and tries to determine the best renderer
 
 #### Under construction
-- **An AppArmor profile**: for sandboxing support (mostly works, but breaks controller support and certain window decorations)
+- **An AppArmor profile**: for sandboxing support (breaks certain window decorations, especially with the launcher)
 
 ## Expected directory structure
 
