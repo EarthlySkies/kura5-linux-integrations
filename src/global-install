@@ -9,6 +9,12 @@ print-global-install-success-banner () {
     exit 0
 }
 
+set-aa-enforce-if-available () {
+    if [ -f /usr/bin/aa-enforce ]; then
+        aa-enforce /etc/apparmor.d/opt.kura5.kura5 > /dev/null 2>&1
+    fi
+}
+
 set-global-installed-file-permissions () {
     echo "$BOLD:: Setting permissions for the installed files...$NORM"
     find "$GLOBALINSTALL"/Kura5_Data -type d -execdir chmod -v 0755 "{}" \;
@@ -72,6 +78,7 @@ start-global-kura5-install () {
     create-required-global-directories
     copy-files-to-global-paths
     set-global-installed-file-permissions
+    set-aa-enforce-if-available
     print-global-install-success-banner
 }
 
