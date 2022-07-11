@@ -45,9 +45,6 @@ check-presense-of-all-files () {
     # We don't check for AppArmor profiles since they aren't necessary
     echo "$BOLD:: Verifying that all files for the install are present...$NORM"
     check-presense-of-file "Kura5.x86_64"
-    check-presense-of-file "README_EN.txt"
-    check-presense-of-file "README_JPN.txt"
-    check-presense-of-file "tinycaw.png"
     check-presense-of-file "kura5-launcher"
     check-presense-of-file "global-install"
     check-presense-of-file "global-uninstall"
