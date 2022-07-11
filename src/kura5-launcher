@@ -4,7 +4,7 @@
 # Tries to determine if Vulkan can be used
 # Provides extended logging
 
-VERSION="1.2.1"
+VERSION="1.3.2"
 USERDIR=~/.config/unity3d/Kura5/Kura5BOTU
 GAMELOG="$USERDIR/Player.log"
 LAUNCHLOG="$USERDIR/Launcher.log"
@@ -57,24 +57,40 @@ catch-launcher-bypass () {
     fi
 }
 
-first-things-first () {
-    # This needs to be created before AppArmor confinment
+first-things-first () {    
+    # Hanging old logs might mess up this session
+    rm -f "$GAMELOG"
+    rm -f "$LAUNCHLOG"
+    rm -f "$STDOUTLOG"
+    
+    # So Duque can know we're running with the launcher
+    loginfo "Kura5 Linux Launcher by EarthlySkies"
+    loginfo "Launcher version: $VERSION"
+    
+    # These needs to be created before AppArmor confinment
+    # Save and log file directory
     if [ ! -d "$USERDIR" ]; then
         mkdir -p "$USERDIR"
         loginfo "Created directory $USERDIR"
     fi
     
-    # Hanging old logs might mess up this session
-    rm -f "$GAMELOG"
-    rm -f "$LAUNCHLOG"
-    rm -f "$STDOUTLOG"
+    # Lockfile directory for '-single-instance'
+    if [ ! -d ~/.config/unity3d/unknown/unknown ]; then
+        mkdir -p ~/.config/unity3d/unknown/unknown
+        loginfo "Created directory ~/.config/unity3d/unknown/unknown"
+    fi
+    
+    # For some Unity's internal stuff, perhaps?
+    if [ ! -d ~/.wapi ]; then
+        mkdir -p ~/.wapi
+        loginfo "Created directory ~/.wapi"
+    fi
+
 }
 
 print-launcher-banner () {
     echo "Kura5: Bonds of the Undying"
     echo "Made by ChickenHat and the Kura5 Team"
-    loginfo "Kura5 Linux Launcher by EarthlySkies"
-    loginfo "Launcher version: $VERSION"
 }
 
 check-if-running-installed () {
@@ -166,6 +182,7 @@ scrub-username-from-logs () {
     if [ "$USER" == "" ]; then
         USER=$(whoami)
     fi
+    
     loginfo "Scrubbing username from the logs..."
     sed --sandbox -i "s/$USER/[username]/g" "$LAUNCHLOG"
     loginfo "Scrub complete"
@@ -208,11 +225,13 @@ start-the-game () {
     if [[ "$@" == *"-nolog"* ]]; then
         rm "$LAUNCHLOG" 
         "$LAUNCHERDIR"/Kura5.x86_64 -single-instance -nolog "$@"
+        rm -r -f --preserve-root ~/.wapi
         exit "$?"
     else
         echo "Logging to $GAMELOG"
         loginfo "Launching the game..."
         "$LAUNCHERDIR"/Kura5.x86_64 -single-instance "$@" >> "$STDOUTLOG" 2>&1
+        rm -r -f --preserve-root ~/.wapi
         log-cleanup "$?"
     fi
 }

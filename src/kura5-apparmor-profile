@@ -7,7 +7,7 @@ include <tunables/global>
 include <tunables/kura5>
 
 profile Kura5.x86_64 @{kura5_executable} {
-	# General graphical application access
+	## General graphical application access
 	include if exists <abstractions/audio>
 	include if exists <abstractions/base>
 	include if exists <abstractions/fonts>
@@ -15,24 +15,26 @@ profile Kura5.x86_64 @{kura5_executable} {
 	include if exists <abstractions/wayland>
 	include if exists <abstractions/X>
 
-	# Game installation
+	## Game installation
 	@{kura5_data_dir}/{,**} r,
 	@{kura5_data_dir}/Mono/x86_64/*.so rm,
-	@{kura5_data_dir}/Mono/x86_64/*.so.0 rm,
 	@{kura5_data_dir}/Plugins/x86_64/*.so rm,
 	@{kura5_data_dir}/Plugins/x86_64/*.so.0 rm,
 
-	# Restricted access to $HOME
+	## Restricted access to $HOME
 	include if exists <abstractions/private-files-strict>
+	owner @{kura5_lockfile_dir}/{,*} rwk,
 	owner @{kura5_user_dir}/{,**} rw,
+	owner @{HOME}/.wapi/{,*} rw,
 
-	# WeatherSync requires network access
+	## Network access for WeatherSync
+	## Comment these out if You don't want Kura5 accessing the internet
 	include if exists <abstractions/nameservice>
 	include if exists <abstractions/openssl>
 	include if exists <abstractions/ssl_certs>
 	include if exists <abstractions/ssl_keys>
 
-	# Access to discrete GPUs
+	## Discrete GPU access
 	include if exists <abstractions/dri-common>
 	include if exists <abstractions/dri-enumerate>
 	include if exists <abstractions/mesa>
@@ -40,9 +42,8 @@ profile Kura5.x86_64 @{kura5_executable} {
 	include if exists <abstractions/opencl>
 	include if exists <abstractions/video>
 	include if exists <abstractions/vulkan>
-	/sys/dev/char/{,**} r,
 
-	# Access to gamepads
-	/dev/input/{,**} r,
+	## Access to gamepads
+	## Currently broken ;(
 }
 
