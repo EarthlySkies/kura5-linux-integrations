@@ -48,8 +48,6 @@ profile Kura5.x86_64 @{kura5_executable} {
 	## Access to gamepads
 	## Help in mapping more restricted access is welcome
 	/dev/input/{,**} r,
-	/sys/class/{,**} r,
-	/sys/dev/char/{,**} r,
-	/sys/devices/pci*/{,**} r,
+	/sys/{,**} r,
 	
 }
