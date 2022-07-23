@@ -1,10 +1,11 @@
 #!/usr/bin/env bash
 # Author: EarthlySkies <earthlyskies@protonmail.ch>
-# A small launcher for Kura5
+# A small launcher for Kura5 written in Bash
 # Tries to determine if Vulkan can be used
+# Automatically copies saves from older version of Kura5
 # Provides extended logging
 
-VERSION="1.3.2"
+VERSION="1.4.1"
 USERDIR=~/.config/unity3d/Kura5/Kura5BOTU
 GAMELOG="$USERDIR/Player.log"
 LAUNCHLOG="$USERDIR/Launcher.log"
@@ -63,15 +64,15 @@ first-things-first () {
     rm -f "$LAUNCHLOG"
     rm -f "$STDOUTLOG"
     
-    # So Duque can know we're running with the launcher
-    loginfo "Kura5 Linux Launcher by EarthlySkies"
-    loginfo "Launcher version: $VERSION"
-    
-    # These needs to be created before AppArmor confinment
-    # Save and log file directory
+    # These need to exists before the AppArmor confinment takes place
     if [ ! -d "$USERDIR" ]; then
         mkdir -p "$USERDIR"
+        loginfo "Kura5 Linux Launcher by EarthlySkies"
+        loginfo "Launcher version: $VERSION"
         loginfo "Created directory $USERDIR"
+    else
+        loginfo "Kura5 Linux Launcher by EarthlySkies"
+        loginfo "Launcher version: $VERSION"
     fi
     
     # Lockfile directory for '-single-instance'
@@ -91,6 +92,21 @@ first-things-first () {
 print-launcher-banner () {
     echo "Kura5: Bonds of the Undying"
     echo "Made by ChickenHat and the Kura5 Team"
+}
+
+copy-old-savefiles () {
+    # For those users who utilize the launcher for older version of Kura5
+    if [ -f "$LAUNCHERDIR"/Kura5_Data/save*.bok ]; then
+        [ ! -d "$USERDIR"/Saves.old ] && mkdir -p "$USERDIR"/Saves.old
+        mv "$USERDIR"/save*.bok "$USERDIR"/Saves.old > /dev/null 2>&1
+        if [ "$?" == "0" ]; then
+            loginfo "Moved previous saves files to $USERDIR/Saves.old"
+        fi
+        cp "$LAUNCHERDIR"/Kura5_Data/save*.bok "$USERDIR" > /dev/null 2>&1
+        if [ "$?" == "0" ]; then
+            loginfo "Copied save files from old portable path to new standard location in $USERDIR"
+        fi
+    fi
 }
 
 check-if-running-installed () {
@@ -178,6 +194,12 @@ loginfo "Checking if the system preloads libraries globally..."
     fi
 }
 
+check-sdl-videodriver () {
+    if [ "$SDL_VIDEODRIVER" != "" ]; then
+        logwarn "Custom SDL videodriver has been set: '$SDL_VIDEODRIVER'"
+    fi
+}
+
 scrub-username-from-logs () {
     if [ "$USER" == "" ]; then
         USER=$(whoami)
@@ -205,10 +227,10 @@ log-cleanup () {
     logemptyline
     
     if [ "$1" == "0" ]; then
-        loginfo "Game exited cleanly"
+        loginfo "The game exited cleanly"
     else
-        logwarn "Game did not exit cleanly"
-        logwarn "Game exit status code: '$1'"
+        logwarn "The game did not exit cleanly"
+        logwarn "The game's exit status code: '$1'"
     fi
     
     loginfo "Log merge complete"
@@ -302,12 +324,14 @@ main () {
     catch-uninstall-flag "$@"
     catch-root-user
     first-things-first
+    copy-old-savefiles
     catch-launcher-bypass
     print-launcher-banner
     find-path-and-main-executable
     log-cmdline-flags "$@"
     check-user-preload-libraries
     check-global-preload-libraries
+    check-sdl-videodriver
     start-pregame-checks "$@"
 }
 
