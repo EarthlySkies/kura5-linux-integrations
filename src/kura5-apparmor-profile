@@ -1,5 +1,8 @@
 #vim: syntax=apparmor
+# Author: EarthlySkies <earthlyskies@pm.me>
+# License: MIT
 # AppArmor profile for Kura5: Bonds of the Undying
+# A part of the Kura5 project's Linux integration suite
 
 abi <abi/3.0>,
 
@@ -7,6 +10,7 @@ include <tunables/global>
 include <tunables/kura5>
 
 profile Kura5.x86_64 @{kura5_executable} {
+
 	## General graphical application access
 	include if exists <abstractions/audio>
 	include if exists <abstractions/base>
@@ -26,11 +30,13 @@ profile Kura5.x86_64 @{kura5_executable} {
 	owner @{kura5_lockfile_dir}/{,*} rwk,
 	owner @{kura5_user_dir}/{,**} rw,
 
-	## Access to Mono shared memory
-	owner /dev/shm/{,*} rw,
+	## Unity really wants to create temporary files here
+	## More Mono shared memory, perhaps?
 	owner @{HOME}/.wapi/{,*} rw,
+        owner /dev/shm/{,*} rw,
 
 	## WeatherSync requires network access
+	## Comment these out if you don't want Kura5 accessing the internet
 	include if exists <abstractions/nameservice>
 	include if exists <abstractions/openssl>
 	include if exists <abstractions/ssl_certs>
@@ -46,8 +52,10 @@ profile Kura5.x86_64 @{kura5_executable} {
 	include if exists <abstractions/vulkan>
 
 	## Access to gamepads
-	## Help in mapping more restricted access is welcome
+	## Help in mapping a more restricted access profile is welcome
 	/dev/input/{,**} r,
 	/sys/{,**} r,
-	
+
+	## Site-specific additions and overrides
+	include if exists <local/opt.kura5.kura5>
 }
