@@ -13,7 +13,7 @@ set-local-installed-file-permissions () {
     echo "$BOLD:: Setting permissions for the installed files...$NORM"
     find "$LOCALINSTALL"/Kura5_Data -type d -execdir chmod -v 0555 "{}" \;
     find "$LOCALINSTALL"/Kura5_Data -type f -execdir chmod -v 0444 "{}" \;
-    chmod -v 0555 "$LOCALINSTALL"/Kura5_Data
+    chmod -v 0755 "$LOCALINSTALL"/Kura5_Data
     chmod -v 0555 "$LOCALINSTALL"/kura5-launcher
     chmod -v 0544 "$LOCALINSTALL"/uninstall
     chmod -v 0444 "$LOCALINSTALL"/tinycaw.png
