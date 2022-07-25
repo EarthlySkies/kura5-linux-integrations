@@ -23,7 +23,6 @@ profile Kura5.x86_64 @{kura5_executable} {
 	@{kura5_data_dir}/{,**} r,
 	@{kura5_data_dir}/Mono/x86_64/*.so rm,
 	@{kura5_data_dir}/Plugins/x86_64/*.so rm,
-	@{kura5_data_dir}/Plugins/x86_64/*.so.0 rm,
 
 	## Restricted access to $HOME
 	include if exists <abstractions/private-files-strict>
