@@ -34,7 +34,7 @@ start-global-kura5-uninstall () {
     echo "$BOLD:: Removing system integration...$NORM"
     rm -v -f /usr/local/bin/kura5
     rm -v -f /etc/apparmor.d/tunables/kura5
-    rm -v -f /etc/apparmor.d/usr.local.bin.kura5
+    rm -v -f /etc/apparmor.d/opt.kura5.kura5
     rm -v -f /usr/share/applications/kura5.desktop
     rm -v -f /usr/share/man/man6/kura5.6.gz
     rm -v -f /usr/share/pixmaps/Kura5BOTU.png
