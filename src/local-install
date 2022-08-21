@@ -35,6 +35,7 @@ copy-files-to-local-paths () {
     install -v -D -m0444 ./README_JPN.txt "$LOCALINSTALL"/README_JPN.txt
     install -v -D -m0444 ./tinycaw.png "$LOCALINSTALL"/tinycaw.png
     install -v -D -m0544 ./Integrations/local-uninstall "$LOCALINSTALL"/uninstall
+    install -v -D -m0444 ./Integrations/kura5-manual-page "$LOCALDATA"/share/man/man6/kura5.6.gz
     install -v -D -m0444 ./Integrations/kura5-desktop-icon "$LOCALDATA"/share/icons/Kura5BOTU.png
     install -v -D -m0444 ./Integrations/desktop.tmp "$LOCALDATA"/share/applications/local.userapp-kura5.desktop
     rm -v -f ./Integrations/desktop.tmp
@@ -46,6 +47,7 @@ create-required-local-directories () {
     [ ! -d "$LOCALDATA"/bin ]                    && mkdir -p -v -m0755 "$LOCALDATA"/bin
     [ ! -d "$LOCALDATA"/share/applications ]     && mkdir -p -v -m0755 "$LOCALDATA"/share/applications
     [ ! -d "$LOCALDATA"/share/icons ]            && mkdir -p -v -m0755 "$LOCALDATA"/share/icons
+    [ ! -d "$LOCALDATA"/share/man/man6 ]         && mkdir -p -v -m0755 "$LOCALDATA"/share/man/man6
     [ ! -d "$LOCALDATA"/share/Kura5/Kura5_Data ] && mkdir -p -v -m0755 "$LOCALDATA"/share/Kura5/Kura5_Data
     echo " Local directories ready"
 }
