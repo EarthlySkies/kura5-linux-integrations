@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # Author: EarthlySkies <earthlyskies@protonmail.ch>
 # Generic Linux install script for Kura5
 # A part of the Kura5 project's Linux integration suite
