@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # Author: EarthlySkies <earthlyskies@protonmail.ch>
 # Part of the Kura5 project's Linux integration suite
 # Used to uninstall Kura5 from the current user
